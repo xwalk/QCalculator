@@ -2,6 +2,7 @@
 #define QCALCULATOR_H
 
 #include <QWidget>
+#include <QGridLayout>
 
 class QCalculator : public QWidget
 {
@@ -13,6 +14,9 @@ public:
 private:
     bool construct();
     QCalculator(QWidget *parent = 0);
+
+private:
+    QGridLayout mainGrid;
 };
 
 #endif // QCALCULATOR_H

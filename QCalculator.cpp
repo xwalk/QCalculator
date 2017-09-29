@@ -2,7 +2,7 @@
 
 QCalculator::QCalculator(QWidget *parent) : QWidget(parent)
 {
-
+    setWindowTitle(tr("calculator"));
 }
 
 QCalculator::~QCalculator()
@@ -25,6 +25,8 @@ QCalculator* QCalculator::NewInstance(QWidget *parent)
 bool QCalculator::construct()
 {
     bool ret = true;
+
+    setLayout(&mainGrid);
 
     return ret;
 }
