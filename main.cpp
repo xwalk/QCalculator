@@ -3,10 +3,15 @@
 
 int main(int argc, char *argv[])
 {
+    int ret = -1;
     QApplication a(argc, argv);
 
     QCalculator* calc = QCalculator::NewInstance();
-    calc->show();
+    if( calc != NULL )
+    {
+        calc->show();
+        ret = a.exec();
+    }
 
-    return a.exec();
+    return ret;
 }
