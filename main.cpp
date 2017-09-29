@@ -4,8 +4,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QCalculator w;
-    w.show();
+
+    QCalculator* calc = QCalculator::NewInstance();
+    calc->show();
 
     return a.exec();
 }

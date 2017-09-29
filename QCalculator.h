@@ -8,8 +8,11 @@ class QCalculator : public QWidget
     Q_OBJECT
 
 public:
-    QCalculator(QWidget *parent = 0);
+    static QCalculator* NewInstance(QWidget *parent = 0);
     ~QCalculator();
+private:
+    bool construct();
+    QCalculator(QWidget *parent = 0);
 };
 
 #endif // QCALCULATOR_H
