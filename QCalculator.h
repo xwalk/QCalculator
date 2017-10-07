@@ -2,7 +2,8 @@
 #define QCALCULATOR_H
 
 #include <QWidget>
-#include <QGridLayout>
+#include <QLineEdit>
+
 
 class QCalculator : public QWidget
 {
@@ -14,9 +15,11 @@ public:
 private:
     bool construct();
     QCalculator(QWidget *parent = 0);
-
+protected slots:
+    void onButtonClicked();
 private:
-    QGridLayout mainGrid;
+    QLineEdit textEdit;
+    static const char* buttonText[20];
 };
 
 #endif // QCALCULATOR_H
