@@ -13,6 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        QCalculator.cpp
+    CalcOperations.cpp \
+    CalculatorUI.cpp \
+    ICCalculator.cpp
 
-HEADERS  += QCalculator.h
+HEADERS  += \
+    CalcOperations.h \
+    CalculatorUI.h \
+    ICCalculator.h

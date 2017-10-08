@@ -1,4 +1,4 @@
-#include "QCalculator.h"
+#include "CalculatorUI.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QStackedLayout>
@@ -7,24 +7,24 @@
 #include <QFont>
 #include <QDebug>
 
-const char* QCalculator::buttonText[] = {"7","8","9","+","(",
+const char* CalculatorUI::buttonText[] = {"7","8","9","+","(",
                                            "4","5","6","-",")",
-                                           "1","2","3","X","<-",
-                                           "0",".","=","÷","C"};
+                                           "1","2","3","*","<-",
+                                           "0",".","=","/","C"};
 
-QCalculator::QCalculator(QWidget *parent) : QWidget(parent,Qt::WindowCloseButtonHint)
+CalculatorUI::CalculatorUI(QWidget *parent) : QWidget(parent,Qt::WindowCloseButtonHint)
 {
-    setWindowTitle(tr("calculator"));
+    m_calc = NULL;
 }
 
-QCalculator::~QCalculator()
+CalculatorUI::~CalculatorUI()
 {
 
 }
 
-QCalculator* QCalculator::NewInstance(QWidget *parent)
+CalculatorUI* CalculatorUI::NewInstance(QWidget *parent)
 {
-    QCalculator* ret = new QCalculator(parent);
+    CalculatorUI* ret = new CalculatorUI(parent);
 
     if( ret == NULL || !ret->construct() )
     {
@@ -34,7 +34,7 @@ QCalculator* QCalculator::NewInstance(QWidget *parent)
     return ret;
 }
 
-bool QCalculator::construct()
+bool CalculatorUI::construct()
 {
     bool ret = true;
 
@@ -83,9 +83,52 @@ bool QCalculator::construct()
     return ret;
 }
 
-void QCalculator::onButtonClicked()
+void CalculatorUI::onButtonClicked()
 {
     QPushButton* send = dynamic_cast<QPushButton*>(sender());
-    qDebug()<< send->text();
+
+    QString text = send->text();
+    QString eText = textEdit.text();
+    if( text == "C")
+    {
+        textEdit.setText("0");
+    }
+    else if( text == "<-")
+    {
+        if( eText != "0")
+        {
+            eText.chop(1);
+            if( eText == "" )
+            {
+                eText = "0";
+            }
+            textEdit.setText(eText);
+        }
+    }
+    else if( text == "=" )
+    {
+        if( m_calc != NULL )
+        {
+            m_calc->setOrigin(eText);
+            textEdit.setText(m_calc->result());
+        }
+    }
+    else
+    {
+        if( eText == "0")
+        {
+            if( text != "*" && text != "÷" && text != ".")
+            {
+                textEdit.clear();
+            }
+        }
+
+        textEdit.insert(text);
+    }
+}
+
+void CalculatorUI::setCalaDelegate(CalcOperations* calc)
+{
+    m_calc = calc;
 }
 

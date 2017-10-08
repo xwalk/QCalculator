@@ -1,12 +1,12 @@
-#include "QCalculator.h"
 #include <QApplication>
+#include "ICCalculator.h"
 
 int main(int argc, char *argv[])
 {
     int ret = -1;
     QApplication a(argc, argv);
 
-    QCalculator* calc = QCalculator::NewInstance();
+    ICCalculator* calc = ICCalculator::NewInstance();
     if( calc != NULL )
     {
         calc->show();
