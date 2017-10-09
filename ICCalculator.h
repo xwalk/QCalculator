@@ -9,10 +9,10 @@ class ICCalculator : public QWidget
 {
     Q_OBJECT
 public:
-    static ICCalculator* NewInstance(QWidget *parent = nullptr);
+    static ICCalculator* NewInstance(QWidget *parent = NULL);
 private:
     bool construct();
-    explicit ICCalculator(QWidget *parent = nullptr);
+    explicit ICCalculator(QWidget *parent = NULL);
 private:
     CalculatorUI* calcUI;
     CalcOperations calcOp;

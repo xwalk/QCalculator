@@ -89,6 +89,10 @@ void CalculatorUI::onButtonClicked()
 
     QString text = send->text();
     QString eText = textEdit.text();
+    if( eText.startsWith("ERROR") )
+    {
+        eText = "0";
+    }
     if( text == "C")
     {
         textEdit.setText("0");

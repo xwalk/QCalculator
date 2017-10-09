@@ -8,8 +8,10 @@
 class CalcOperations
 {
     typedef enum{
-        ERR_NULL,
-        ERR_NUMBER,
+        ERR_NULL = 0,
+        ERR_MOREOP,
+        ERR_LESS_LEFTBRACKET,
+        ERR_LESS_RIGHTBRACKET
     }ErrEnum;
 public:
     CalcOperations();
@@ -19,10 +21,10 @@ private:
     QQueue<QString> separateStr(const QString& origin);
     ErrEnum isValidOperation(const QQueue<QString>& str);
 
-    bool isNumber(QChar ch);
-    bool isOperation(QChar ch);
-    bool isSign(QChar ch);
-    bool iaBracket(QChar ch);
+    bool isNumber(const QString& ch);
+    bool isOperation(const QString& ch);
+    bool isSign(const QString& ch);
+    bool isBracket(const QString& ch);
 private:
     QString m_origin;
     QString m_result;
