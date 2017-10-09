@@ -16,12 +16,16 @@ void CalcOperations::setOrigin(const QString& origin)
     ErrEnum errNum = isValidOperation(exp);
     if( errNum == ERR_NULL )
     {
-        m_result = "0";
+        QQueue<QString> postExp = toPostfix(exp);
+        qDebug() << postExp;
+        double r = calcPostfix(postExp,&errNum);
+        if( errNum == ERR_NULL )
+        {
+            m_result = QString().setNum(r);
+            return;
+        }
     }
-    else
-    {
-        m_result = "ERROR" + QString::number(errNum);
-    }
+    m_result = "ERROR" + QString::number(errNum);
 }
 
 QString CalcOperations::result()
@@ -110,7 +114,98 @@ QQueue<QString> CalcOperations::toPostfix(const QQueue<QString>& str)
 {
     QQueue<QString> ret;
 
+    QStack<QString> tmpStack;
+    QString popStr;
+    QString tmpStr;
+    int len = str.length();
+    for( int i=0; i<len; i++)
+    {
+        qDebug() << tmpStack;
+        tmpStr = str[i];
+        if( isOperand(tmpStr) )
+        {
+            ret.enqueue(tmpStr);
+        }
+        else
+        {
+            if( tmpStr == "(" )
+            {
+                tmpStack.push(tmpStr);
+            }
+            else if( tmpStr == ")" )
+            {
+                popStr = tmpStack.pop();
+                while( popStr != "(" )
+                {
+                    ret.enqueue(popStr);
+                    popStr = tmpStack.pop();
+                }
+            }
+            else
+            {
+                while( !tmpStack.isEmpty() && (opPriority(tmpStr) <= opPriority(tmpStack.top())) )
+                {
+                    ret.enqueue(tmpStack.pop());
+                }
+                tmpStack.push(tmpStr);
+            }
+        }
+    }
+    while( !tmpStack.isEmpty() )
+    {
+        ret.enqueue(tmpStack.pop());
+    }
 
+    return ret;
+}
+
+double CalcOperations::calcPostfix(const QQueue<QString>& str,ErrEnum* num)
+{
+    *num = ERR_NULL;
+    double ret = 0;
+    const double zo = 0.00000001;
+
+    QStack<QString> tmpStack;
+    int len = str.length();
+    QString tmpStr;
+    for( int i=0; i<len; i++)
+    {
+        tmpStr = str[i];
+        if( isOperand( tmpStr ))
+        {
+            tmpStack.push( tmpStr );
+        }
+        else
+        {
+            double leftOper = tmpStack.pop().toDouble();
+            double rightOper = tmpStack.pop().toDouble();
+            if( tmpStr == "+" )
+            {
+                tmpStack.push( QString().setNum(leftOper + rightOper) );
+            }
+            else if( tmpStr == "-" )
+            {
+                tmpStack.push( QString().setNum(leftOper - rightOper) );
+            }
+            else if( tmpStr == "*" )
+            {
+                tmpStack.push( QString().setNum(leftOper * rightOper) );
+            }
+            else if( tmpStr == "/" )
+            {
+                if( !(rightOper < zo && rightOper > -zo) )
+                {
+                    tmpStack.push( QString().setNum(leftOper / rightOper) );
+                }
+                else
+                {
+                    *num = ERR_DEV_ZERO;
+                    break;
+                }
+            }
+        }
+    }
+    ret = tmpStack.pop().toDouble();
 
     return ret;
 }
@@ -160,6 +255,35 @@ bool CalcOperations::isBracket(const QString& ch)
     {
         ret = true;
     }
+
+    return ret;
+}
+
+int CalcOperations::opPriority(const QString& ch)
+{
+    int ret = 0;
+
+    if( isOperation(ch) )
+    {
+        ret = 2;
+        if( isSign(ch) )
+        {
+            ret = 1;
+        }
+    }
+    else
+    {
+        ret = 0;
+    }
+
+    return ret;
+}
+
+bool CalcOperations::isOperand(const QString& ch)
+{
+    bool ret = true;
+
+    ch.toDouble(&ret);
 
     return ret;
 }
