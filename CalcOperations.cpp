@@ -106,6 +106,15 @@ CalcOperations::ErrEnum CalcOperations::isValidOperation(const QQueue<QString>& 
     return ret;
 }
 
+QQueue<QString> CalcOperations::toPostfix(const QQueue<QString>& str)
+{
+    QQueue<QString> ret;
+
+
+
+    return ret;
+}
+
 bool CalcOperations::isNumber(const QString& ch)
 {
     bool ret = false;

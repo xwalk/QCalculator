@@ -20,6 +20,7 @@ public:
 private:
     QQueue<QString> separateStr(const QString& origin);
     ErrEnum isValidOperation(const QQueue<QString>& str);
+    QQueue<QString> toPostfix(const QQueue<QString>& str);
 
     bool isNumber(const QString& ch);
     bool isOperation(const QString& ch);
