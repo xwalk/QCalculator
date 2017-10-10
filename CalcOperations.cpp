@@ -76,14 +76,17 @@ CalcOperations::ErrEnum CalcOperations::isValidOperation(const QQueue<QString>& 
 
     int leftBracket = 0;
     int len = str.length();
-    for( int i=0; i<len; i++ )
+    if( !isOperand( str[len-1] ) )
+    {
+        ret = ERR_END_WITH_NUBER;
+    }
+    for( int i=0; i<len && ret == ERR_NULL ; i++ )
     {
         if( isOperation(str[i]) )
         {
             if( i==0 || str[i-1] == "(" || isOperation(str[i-1]) )
             {
                 ret = ERR_MOREOP;
-                break;
             }
         }
         else
@@ -98,7 +101,6 @@ CalcOperations::ErrEnum CalcOperations::isValidOperation(const QQueue<QString>& 
                 if( leftBracket < 0 )
                 {
                     ret = ERR_LESS_LEFTBRACKET;
-                    break;
                 }
             }
         }
@@ -120,7 +122,6 @@ QQueue<QString> CalcOperations::toPostfix(const QQueue<QString>& str)
     int len = str.length();
     for( int i=0; i<len; i++)
     {
-        qDebug() << tmpStack;
         tmpStr = str[i];
         if( isOperand(tmpStr) )
         {
@@ -177,8 +178,8 @@ double CalcOperations::calcPostfix(const QQueue<QString>& str,ErrEnum* num)
         }
         else
         {
-            double leftOper = tmpStack.pop().toDouble();
             double rightOper = tmpStack.pop().toDouble();
+            double leftOper= tmpStack.pop().toDouble();
             if( tmpStr == "+" )
             {
                 tmpStack.push( QString().setNum(leftOper + rightOper) );
@@ -205,8 +206,10 @@ double CalcOperations::calcPostfix(const QQueue<QString>& str,ErrEnum* num)
             }
         }
     }
-    ret = tmpStack.pop().toDouble();
-
+    if( *num == ERR_NULL)
+    {
+        ret = tmpStack.pop().toDouble();
+    }
     return ret;
 }
 

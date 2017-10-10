@@ -17,11 +17,15 @@ public:
 private:
     bool construct();
     CalculatorUI(QWidget *parent = 0);
+    void handleText(QString text);
 protected slots:
     void onButtonClicked();
+protected:
+    bool eventFilter(QObject *ob, QEvent *e);
 private:
     QLineEdit textEdit;
     CalcOperations* m_calc;
+    bool nextCalc;
     static const char* buttonText[20];
 
 };

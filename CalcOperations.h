@@ -12,7 +12,8 @@ class CalcOperations
         ERR_MOREOP,
         ERR_LESS_LEFTBRACKET,
         ERR_LESS_RIGHTBRACKET,
-        ERR_DEV_ZERO
+        ERR_DEV_ZERO,
+        ERR_END_WITH_NUBER
     }ErrEnum;
 public:
     CalcOperations();

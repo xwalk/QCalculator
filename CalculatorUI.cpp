@@ -1,11 +1,12 @@
-#include "CalculatorUI.h"
+﻿#include "CalculatorUI.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QStackedLayout>
 #include <QPalette>
 #include <QPushButton>
 #include <QFont>
-#include <QDebug>
+#include <QEvent>
+#include <QKeyEvent>
 
 const char* CalculatorUI::buttonText[] = {"7","8","9","+","(",
                                            "4","5","6","-",")",
@@ -15,6 +16,8 @@ const char* CalculatorUI::buttonText[] = {"7","8","9","+","(",
 CalculatorUI::CalculatorUI(QWidget *parent) : QWidget(parent,Qt::WindowCloseButtonHint)
 {
     m_calc = NULL;
+    nextCalc = true;
+    textEdit.installEventFilter(this);
 }
 
 CalculatorUI::~CalculatorUI()
@@ -83,15 +86,13 @@ bool CalculatorUI::construct()
     return ret;
 }
 
-void CalculatorUI::onButtonClicked()
+void CalculatorUI::handleText(QString text)
 {
-    QPushButton* send = dynamic_cast<QPushButton*>(sender());
-
-    QString text = send->text();
     QString eText = textEdit.text();
-    if( eText.startsWith("ERROR") )
+    if( nextCalc )
     {
         eText = "0";
+        nextCalc = false;
     }
     if( text == "C")
     {
@@ -108,6 +109,10 @@ void CalculatorUI::onButtonClicked()
             }
             textEdit.setText(eText);
         }
+        else
+        {
+           textEdit.setText("0");
+        }
     }
     else if( text == "=" )
     {
@@ -115,6 +120,7 @@ void CalculatorUI::onButtonClicked()
         {
             m_calc->setOrigin(eText);
             textEdit.setText(m_calc->result());
+            nextCalc = true;
         }
     }
     else
@@ -125,14 +131,68 @@ void CalculatorUI::onButtonClicked()
             {
                 textEdit.clear();
             }
+            else
+            {
+                textEdit.setText("0");
+            }
         }
 
         textEdit.insert(text);
     }
 }
 
+void CalculatorUI::onButtonClicked()
+{
+    QPushButton* send = dynamic_cast<QPushButton*>(sender());
+
+    handleText(send->text());
+
+}
+
 void CalculatorUI::setCalaDelegate(CalcOperations* calc)
 {
     m_calc = calc;
+}
+
+bool CalculatorUI::eventFilter(QObject *ob, QEvent *e)
+{
+    bool ret = true;
+
+    if( ob == &textEdit && e->type() == QEvent::KeyRelease )
+    {
+        QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
+        QString text;
+        switch ( ke->key() )
+        {
+        case Qt::Key_0:text = "0";break;
+        case Qt::Key_1:text = "1";break;
+        case Qt::Key_2:text = "2";break;
+        case Qt::Key_3:text = "3";break;
+        case Qt::Key_4:text = "4";break;
+        case Qt::Key_5:text = "5";break;
+        case Qt::Key_6:text = "6";break;
+        case Qt::Key_7:text = "7";break;
+        case Qt::Key_8:text = "8";break;
+        case Qt::Key_9:text = "9";break;
+        case Qt::Key_Period:text = ".";break;
+        case Qt::Key_Enter:text = "=";break;
+        case Qt::Key_ParenLeft:text = "(";break;
+        case Qt::Key_ParenRight:text = ")";break;
+        case Qt::Key_Plus:text = "+";break;
+        case Qt::Key_Minus:text = "-";break;
+        case Qt::Key_Asterisk:text = "*";break;
+        case Qt::Key_Slash:text = "/";break;
+        case Qt::Key_Backspace:text = "<-";break;
+        case Qt::Key_Escape:text = "C";break;
+        default:break;
+        }
+        handleText( text );
+    }
+    else
+    {
+        ret = QWidget::eventFilter(ob,e);
+    }
+
+    return ret;
 }
 
