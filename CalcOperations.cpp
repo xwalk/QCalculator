@@ -12,12 +12,12 @@ void CalcOperations::setOrigin(const QString& origin)
 {
     m_origin = origin;
     QQueue<QString> exp = separateStr(m_origin);
-    qDebug() << exp;
+//    qDebug() << exp;
     ErrEnum errNum = isValidOperation(exp);
     if( errNum == ERR_NULL )
     {
         QQueue<QString> postExp = toPostfix(exp);
-        qDebug() << postExp;
+//        qDebug() << postExp;
         double r = calcPostfix(postExp,&errNum);
         if( errNum == ERR_NULL )
         {
